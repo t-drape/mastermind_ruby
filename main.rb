@@ -63,3 +63,13 @@ end
 
 white_dots_correct_color_wrong_position = 0
 black_dots_correct_color_correct_position = 0
+
+puts "What's your four-color guess? (ex: blue, blue, blue, blue)"
+puts "Available Colors: blue, red, orange, yellow, purple, green "
+guess = gets.chomp
+            .split(",")
+p "No!!!" if guess.length != 4
+
+g = guess[0]
+
+p "NOOOOOO" unless ACCEPTABLE_COLORS.include?(g)

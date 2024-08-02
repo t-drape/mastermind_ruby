@@ -60,3 +60,6 @@ def get_color_code(available_colors)
   4.times { color_code << available_colors[random.rand(5)] }
   color_code
 end
+
+white_dots_correct_color_wrong_position = 0
+black_dots_correct_color_correct_position = 0

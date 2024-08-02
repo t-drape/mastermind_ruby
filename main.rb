@@ -7,8 +7,8 @@
 #  Remember that you need to give the proper feedback 	on  how good the guess was each turn!”
 
 #     - [ ] Create PlayGame function/class
-#         - [ ] Set ACCEPTABLE_COLORS to six colors, (blue, red, orange, yellow, purple, green)
-#         - [ ] Let computer generate random four color code, (blue, red, orange, yellow, purple, green)
+#         - [x] Set ACCEPTABLE_COLORS to six colors, (blue, red, orange, yellow, purple, green)
+#         - [x] Let computer generate random four color code, (blue, red, orange, yellow, purple, green)
 #         - [ ] Define PlayGame to PlayRound 12 times
 #             - [ ] If winner, exit loop, print congratulatory message
 #             - [ ] Else, continue until 12, then print loser message
@@ -22,9 +22,9 @@
 #                 - [ ] If any color from guess in color code,
 #                     - [ ] For each color in user guess,
 #                         - [ ] If guess is correct color and position,
-#                             - [ ] Increase white_dot by one
-#                         - [ ] Else if guess is correct color but wrong position,
 #                             - [ ] Increase black_dot by one
+#                         - [ ] Else if guess is correct color but wrong position,
+#                             - [ ] Increase white_dot by one
 #                         - [ ] Else do nothing
 #                 - [ ] Else, continue loop
 # Step 2:
@@ -51,3 +51,12 @@
 #     - [ ] Make computer beatable, but not easy (medium)
 #     - [ ] Create game logic
 #     - [ ] Play 12 Rounds as normal
+
+ACCEPTABLE_COLORS = %w[blue red orange yellow purple green].freeze
+
+def get_color_code(available_colors)
+  random = Random.new
+  color_code = []
+  4.times { color_code << available_colors[random.rand(5)] }
+  color_code
+end

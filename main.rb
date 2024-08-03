@@ -61,9 +61,6 @@ def get_color_code(available_colors)
   color_code
 end
 
-white_dots_correct_color_wrong_position = 0
-black_dots_correct_color_correct_position = 0
-
 def user_guess
   guess = []
   puts "What's your four-color guess? (ex: blue, blue, blue, blue)"
@@ -75,17 +72,8 @@ def user_guess
   guess
 end
 
-computer_color_code = get_color_code(ACCEPTABLE_COLORS)
-
-guess = user_guess
-
-guess = user_guess unless guess.length == 4
-guess.each do |color|
-  guess = user_guess unless ACCEPTABLE_COLORS.include?(color)
-end
-
-def compare_colors(guess, computer_color_code, black_dots_correct_color_correct_position,
-                   white_dots_correct_color_wrong_position)
+def compare_codes(guess, computer_color_code, black_dots_correct_color_correct_position,
+                  white_dots_correct_color_wrong_position)
   guess.each_with_index do |guess_color, guess_index|
     computer_color_code.each_with_index do |computer_color, computer_color_index|
       if guess_color == computer_color && guess_index == computer_color_index
@@ -114,8 +102,25 @@ def evaluate_round(guess, computer_color_code, black_dots_correct_color_correct_
   end
 end
 
-evaluate_round(guess, computer_color_code, black_dots_correct_color_correct_position,
-               white_dots_correct_color_wrong_position)
+def play_round(computer_color_code)
+  white_dots_correct_color_wrong_position = 0
+  black_dots_correct_color_correct_position = 0
 
-def play_round
+  guess = user_guess
+
+  guess = user_guess unless guess.length == 4
+  guess.each do |color|
+    guess = user_guess unless ACCEPTABLE_COLORS.include?(color)
+  end
+
+  evaluate_round(guess, computer_color_code, black_dots_correct_color_correct_position,
+                 white_dots_correct_color_wrong_position)
 end
+
+computer_color_code = get_color_code(ACCEPTABLE_COLORS)
+
+def play_game(computer_color_code)
+  12.times { play_round(computer_color_code) }
+end
+
+play_game(computer_color_code)

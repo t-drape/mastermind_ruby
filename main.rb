@@ -64,12 +64,58 @@ end
 white_dots_correct_color_wrong_position = 0
 black_dots_correct_color_correct_position = 0
 
-puts "What's your four-color guess? (ex: blue, blue, blue, blue)"
-puts "Available Colors: blue, red, orange, yellow, purple, green "
-guess = gets.chomp
-            .split(",")
-p "No!!!" if guess.length != 4
+def user_guess
+  guess = []
+  puts "What's your four-color guess? (ex: blue, blue, blue, blue)"
+  puts "Available Colors: blue, red, orange, yellow, purple, green "
+  4.times do |time|
+    puts "Color #{time + 1}: "
+    guess << gets.chomp
+  end
+  guess
+end
 
-g = guess[0]
+computer_color_code = get_color_code(ACCEPTABLE_COLORS)
 
-p "NOOOOOO" unless ACCEPTABLE_COLORS.include?(g)
+guess = user_guess
+
+guess = user_guess unless guess.length == 4
+guess.each do |color|
+  guess = user_guess unless ACCEPTABLE_COLORS.include?(color)
+end
+
+def compare_colors(guess, computer_color_code, black_dots_correct_color_correct_position,
+                   white_dots_correct_color_wrong_position)
+  guess.each_with_index do |guess_color, guess_index|
+    computer_color_code.each_with_index do |computer_color, computer_color_index|
+      if guess_color == computer_color && guess_index == computer_color_index
+        black_dots_correct_color_correct_position += 1
+        break
+      elsif guess_color == computer_color && guess_index != computer_color_index
+        white_dots_correct_color_wrong_position += 1
+        break
+      end
+    end
+  end
+  [black_dots_correct_color_correct_position, white_dots_correct_color_wrong_position]
+end
+
+def evaluate_round(guess, computer_color_code, black_dots_correct_color_correct_position,
+                   white_dots_correct_color_wrong_position)
+  if guess == computer_color_code
+    p "Winner"
+  elsif computer_color_code.any? { |element| guess.include?(element) }
+    b_dots, w_dots = compare_colors(guess, computer_color_code, black_dots_correct_color_correct_position,
+                                    white_dots_correct_color_wrong_position)
+    p "Correct Color and Position: #{b_dots}"
+    p "Correct Color but Wrong Position: #{w_dots}"
+  else
+    p "loser"
+  end
+end
+
+evaluate_round(guess, computer_color_code, black_dots_correct_color_correct_position,
+               white_dots_correct_color_wrong_position)
+
+def play_round
+end

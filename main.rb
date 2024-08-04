@@ -105,13 +105,15 @@ def compare_codes(guess, computer_color_code, black_dots, white_dots)
       else
         new_hash[[index, computer_index]] = 1
       end
-      break
     end
   end
   x = new_hash.select { |key, _value| key[0] == key[1] }
   kf = x.keys.flatten
   y = new_hash.reject { |key, _value| kf.include?(key[1]) }
-  white_dots = y.length
+  p y
+  ununiq = y.map { |key, value| key[1] }
+  unique = ununiq.uniq
+  white_dots = unique.length
   [black_dots, white_dots]
 end
 
@@ -147,7 +149,7 @@ end
 
 computer_color_code = get_color_code(ACCEPTABLE_COLORS)
 
-computer_color_code = %w[blue red orange green]
+computer_color_code = %w[red blue red orange]
 def play_game(computer_color_code)
   12.times { play_round(computer_color_code) }
 end

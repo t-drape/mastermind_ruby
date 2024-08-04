@@ -72,20 +72,47 @@ def user_guess
   guess
 end
 
-def compare_codes(guess, computer_color_code, black_dots_correct_color_correct_position,
-                  white_dots_correct_color_wrong_position)
-  guess.each_with_index do |guess_color, guess_index|
-    computer_color_code.each_with_index do |computer_color, computer_color_index|
-      if guess_color == computer_color && guess_index == computer_color_index
-        black_dots_correct_color_correct_position += 1
-        break
-      elsif guess_color == computer_color && guess_index != computer_color_index
-        white_dots_correct_color_wrong_position += 1
-        break
+# def compare_codes(guess, computer_color_code, black_dots_correct_color_correct_position,
+#                   white_dots_correct_color_wrong_position)
+#   guess.each_with_index do |guess_color, guess_index|
+#     computer_color_code.each_with_index do |computer_color, computer_color_index|
+#       if guess_color == computer_color && guess_index == computer_color_index
+#         black_dots_correct_color_correct_position += 1
+#         break
+#       elsif guess_color == computer_color && guess_index != computer_color_index
+#         white_dots_correct_color_wrong_position += 1
+#         break
+#       end
+#     end
+#   end
+#   [black_dots_correct_color_correct_position, white_dots_correct_color_wrong_position]
+# end
+#
+
+def compare_codes(guess, computer_color_code, black_dots, white_dots)
+  new_hash = {}
+  guess.each_with_index do |color, index|
+    if computer_color_code[index] == color
+      black_dots += 1
+      new_hash[[index, index]] = 1
+      next
+    end
+    computer_color_code.each_with_index do |computer_color, computer_index|
+      next unless color == computer_color && index != computer_index
+
+      if new_hash[[index, computer_index]]
+        new_hash[[index, computer_index]] += 1
+      else
+        new_hash[[index, computer_index]] = 1
       end
+      break
     end
   end
-  [black_dots_correct_color_correct_position, white_dots_correct_color_wrong_position]
+  x = new_hash.select { |key, _value| key[0] == key[1] }
+  kf = x.keys.flatten
+  y = new_hash.reject { |key, _value| kf.include?(key[1]) }
+  white_dots = y.length
+  [black_dots, white_dots]
 end
 
 def evaluate_round(guess, computer_color_code, black_dots_correct_color_correct_position,
@@ -93,12 +120,13 @@ def evaluate_round(guess, computer_color_code, black_dots_correct_color_correct_
   if guess == computer_color_code
     p "Winner"
   elsif computer_color_code.any? { |element| guess.include?(element) }
-    b_dots, w_dots = compare_colors(guess, computer_color_code, black_dots_correct_color_correct_position,
-                                    white_dots_correct_color_wrong_position)
-    p "Correct Color and Position: #{b_dots}"
-    p "Correct Color but Wrong Position: #{w_dots}"
+    black_dots_correct_color_correct_position, white_dots_correct_color_wrong_position = compare_codes(guess, computer_color_code, black_dots_correct_color_correct_position,
+                                                                                                       white_dots_correct_color_wrong_position)
+    p "Correct Color and Position: #{black_dots_correct_color_correct_position}"
+    p "Correct Color but Wrong Position: #{white_dots_correct_color_wrong_position}"
   else
-    p "loser"
+    p "Correct Color and Position: #{black_dots_correct_color_correct_position}"
+    p "Correct Color but Wrong Position: #{white_dots_correct_color_wrong_position}"
   end
 end
 
@@ -119,6 +147,7 @@ end
 
 computer_color_code = get_color_code(ACCEPTABLE_COLORS)
 
+computer_color_code = %w[blue red orange green]
 def play_game(computer_color_code)
   12.times { play_round(computer_color_code) }
 end

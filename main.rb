@@ -232,6 +232,7 @@ def play_game(computer_color_code)
     end_game = play_round(computer_color_code)
     break if end_game
   end
+  p computer_color_code
 end
 
 play_game(computer_color_code)

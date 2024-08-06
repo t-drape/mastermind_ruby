@@ -227,7 +227,6 @@ end
 computer_color_code = get_color_code(ACCEPTABLE_COLORS)
 
 def play_game(computer_color_code)
-  p computer_color_code
   end_game = false
   12.times do
     end_game = play_round(computer_color_code)

@@ -91,34 +91,52 @@ end
 #
 # Try removing elements from array once a match is hit
 
-def compare_codes(guess, computer_color_code)
+def compare_codes(my_guess, the_computer_color_code)
   # Try removing elements from array once a match is hit
-  new_guess = guess.clone
-  new_code = computer_color_code.clone
   bd = 0
   wd = 0
+
+  guess = my_guess.clone
+  computer_color_code = the_computer_color_code.clone
+
+  delete_indexes = []
 
   guess.each_with_index do |color, index|
     next unless color == computer_color_code[index]
 
     bd += 1
-    x = new_guess.find_index(color)
-    new_guess.delete_at(x)
-    new_code.delete_at(x)
+    delete_indexes << index
   end
 
-  new_new_guess = new_guess.clone
-  new_new_code = new_code.clone
-
-  new_guess.each do |color|
-    next unless new_code.include?(color)
-
-    wd += 1
-    x = new_new_guess.find_index(color)
-    new_new_guess.delete_at(x)
-    y = new_new_code.find_index(color)
-    new_new_code.delete_at(y)
+  delete_indexes = delete_indexes.reverse
+  delete_indexes.each do |index|
+    guess.delete_at(index)
+    computer_color_code.delete_at(index)
   end
+
+  guess.each do |color|
+    delete_index = nil
+    computer_color_code.each_with_index do |computer_color, computer_index|
+      next unless color == computer_color
+
+      wd += 1
+      delete_index = computer_index
+      break
+    end
+    computer_color_code.delete_at(delete_index) if delete_index
+  end
+
+  # new_new_guess = guess.clone
+  # new_new_code = computer_color_code.clone
+
+  # new_guess.each_with_index do |color, index|
+  #   next unless new_code.include?(color)
+
+  #   wd += 1
+  #   new_new_guess.delete_at(index)
+  #   y = new_new_code.find_index(color)
+  #   new_new_code.delete_at(y)
+  # end
 
   # new_guess.each do |color|
   #   new_code.each do |computer_color|
@@ -175,13 +193,16 @@ def evaluate_round(guess, computer_color_code, bdots,
                    wdots)
   if guess == computer_color_code
     p "Winner"
+    true
   elsif computer_color_code.any? { |element| guess.include?(element) }
     bdots, wdots = compare_codes(guess, computer_color_code)
     p "Correct Color and Position: #{bdots}"
     p "Correct Color but Wrong Position: #{wdots}"
+    false
   else
     p "Correct Color and Position: #{bdots}"
     p "Correct Color but Wrong Position: #{wdots}"
+    false
   end
 end
 
@@ -192,9 +213,12 @@ def play_round(computer_color_code)
   guess = user_guess
 
   guess = user_guess unless guess.length == 4
+
+  redo_needed = false
   guess.each do |color|
-    guess = user_guess unless ACCEPTABLE_COLORS.include?(color)
+    redo_needed = true unless ACCEPTABLE_COLORS.include?(color)
   end
+  guess = user_guess if redo_needed
 
   evaluate_round(guess, computer_color_code, black_dots_correct_color_correct_position,
                  white_dots_correct_color_wrong_position)
@@ -202,9 +226,13 @@ end
 
 computer_color_code = get_color_code(ACCEPTABLE_COLORS)
 
-computer_color_code = %w[red blue red orange]
 def play_game(computer_color_code)
-  12.times { play_round(computer_color_code) }
+  p computer_color_code
+  end_game = false
+  12.times do
+    end_game = play_round(computer_color_code)
+    break if end_game
+  end
 end
 
 play_game(computer_color_code)

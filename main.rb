@@ -158,7 +158,15 @@ def play_round(computer_color_code)
   evaluate_round(guess, computer_color_code, b_dots, w_dots)
 end
 
-def play_game
+def user_pick
+  puts "Do you want to create the code? [Y/N] "
+  user_choice = gets.chomp
+  user_pick unless %w[Y N].include?(user_choice)
+
+  user_choice == "N"
+end
+
+def user_guessing_computer_code
   computer_color_code = get_color_code(ACCEPTABLE_COLORS)
   end_game = false
   12.times do
@@ -166,6 +174,15 @@ def play_game
     break if end_game
   end
   p computer_color_code
+end
+
+def play_game
+  if user_pick
+    puts "You are guessing the computer's code!"
+    user_guessing_computer_code
+  else
+    puts "Not ready yet!"
+  end
 end
 
 play_game

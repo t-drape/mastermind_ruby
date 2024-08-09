@@ -72,25 +72,6 @@ def user_guess
   guess
 end
 
-# def compare_codes(guess, computer_color_code, black_dots_correct_color_correct_position,
-#                   white_dots_correct_color_wrong_position)
-#   guess.each_with_index do |guess_color, guess_index|
-#     computer_color_code.each_with_index do |computer_color, computer_color_index|
-#       if guess_color == computer_color && guess_index == computer_color_index
-#         black_dots_correct_color_correct_position += 1
-#         break
-#       elsif guess_color == computer_color && guess_index != computer_color_index
-#         white_dots_correct_color_wrong_position += 1
-#         break
-#       end
-#     end
-#   end
-#   [black_dots_correct_color_correct_position, white_dots_correct_color_wrong_position]
-# end
-#
-#
-# Try removing elements from array once a match is hit
-
 def compare_codes(my_guess, the_computer_color_code)
   # Try removing elements from array once a match is hit
   bd = 0
@@ -128,66 +109,6 @@ def compare_codes(my_guess, the_computer_color_code)
 
   [bd, wd]
 end
-
-# new_new_guess = guess.clone
-# new_new_code = computer_color_code.clone
-
-# new_guess.each_with_index do |color, index|
-#   next unless new_code.include?(color)
-
-#   wd += 1
-#   new_new_guess.delete_at(index)
-#   y = new_new_code.find_index(color)
-#   new_new_code.delete_at(y)
-# end
-
-# new_guess.each do |color|
-#   new_code.each do |computer_color|
-#     next unless color == computer_color
-
-#     wd += 1
-#     p "---Guess----"
-#     p new_guess
-#     x = new_guess.find_index(color)
-#     new_guess.delete_at(x)
-#     p new_guess
-#     p "----Code-----"
-#     p new_code
-#     y = new_code.find_index(computer_color)
-#     new_code.delete_at(y)
-#     p new_code
-#     break
-#   end
-# end
-
-# guess.each_with_index do |color, index|
-#   if computer_color_code[index] == color
-#     black_dots += 1
-#     new_hash[[index, index]] = 1
-#     next
-#   end
-#   computer_color_code.each_with_index do |computer_color, computer_index|
-#     next unless color == computer_color && index != computer_index
-
-#     if new_hash[[index, computer_index]]
-#       new_hash[[index, computer_index]] += 1
-#     else
-#       new_hash[[index, computer_index]] = 1
-#     end
-#     break
-#   end
-# end
-# x = new_hash.select { |key, _value| key[0] == key[1] }
-# kf = x.keys.flatten
-# y = new_hash.reject { |key, _value| kf.include?(key[1]) }
-# zero_keys = y.keys.map { |key| key[0] }
-# m = y.each_key.select { |key| zero_keys.count(key[0]) > 1 }
-# nm = m.map { |val| val[1] }
-# p nm.uniq
-# ununiq = y.map { |key, value| key[1] }
-# unique = ununiq.uniq
-# p ununiq.length
-# [black_dots, ununiq.uniq.length]
 
 def equality_check(guess, computer_color_code)
   return unless guess == computer_color_code

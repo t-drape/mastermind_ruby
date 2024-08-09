@@ -91,6 +91,18 @@ def double_matches(guess, computer_color_code)
   indexes
 end
 
+def single_match(guess, computer_color_code, w_dots)
+  guess.each do |color|
+    computer_color_code.each_with_index do |computer_color, computer_index|
+      next unless color == computer_color
+
+      w_dots += 1
+      computer_color_code.delete_at(computer_index)
+      break
+    end
+  end
+end
+
 def compare_codes(user_guess, random_color_code, b_dots, w_dots)
   # Try removing elements from array once a match is hit
   # Work on clone to not permanently remove elements from original
@@ -105,15 +117,13 @@ def compare_codes(user_guess, random_color_code, b_dots, w_dots)
   guess, computer_color_code = double_matches_delete(delete_indexes, guess, computer_color_code)
 
   guess.each do |color|
-    delete_index = nil
     computer_color_code.each_with_index do |computer_color, computer_index|
       next unless color == computer_color
 
       w_dots += 1
-      delete_index = computer_index
+      computer_color_code.delete_at(computer_index)
       break
     end
-    computer_color_code.delete_at(delete_index) if delete_index
   end
 
   [b_dots, w_dots]
@@ -157,6 +167,7 @@ end
 
 def play_game
   computer_color_code = get_color_code(ACCEPTABLE_COLORS)
+  computer_color_code = %w[red blue red orange]
   end_game = false
   12.times do
     end_game = play_round(computer_color_code)

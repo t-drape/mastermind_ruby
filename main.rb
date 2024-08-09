@@ -160,7 +160,6 @@ end
 
 def play_game
   computer_color_code = get_color_code(ACCEPTABLE_COLORS)
-  computer_color_code = %w[red blue red orange]
   end_game = false
   12.times do
     end_game = play_round(computer_color_code)

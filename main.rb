@@ -72,7 +72,7 @@ def user_guess
   guess
 end
 
-def double_matches(delete_indexes, guess, computer_color_code)
+def double_matches_delete(delete_indexes, guess, computer_color_code)
   delete_indexes = delete_indexes.reverse
   delete_indexes.each do |index|
     guess.delete_at(index)
@@ -81,9 +81,14 @@ def double_matches(delete_indexes, guess, computer_color_code)
   [guess, computer_color_code]
 end
 
-def bd_increment(b_dots)
-  b_dots += 1
-  b_dots
+def double_matches(guess, computer_color_code)
+  indexes = []
+  guess.each_with_index do |color, index|
+    next unless color == computer_color_code[index]
+
+    indexes << index
+  end
+  indexes
 end
 
 def compare_codes(user_guess, random_color_code, b_dots, w_dots)
@@ -93,20 +98,11 @@ def compare_codes(user_guess, random_color_code, b_dots, w_dots)
   guess = user_guess.clone
   computer_color_code = random_color_code.clone
 
-  delete_indexes = []
+  delete_indexes = double_matches(guess, computer_color_code)
 
-  p b_dots
-  bd_increment(b_dots)
-  p b_dots
+  b_dots += delete_indexes.length
 
-  guess.each_with_index do |color, index|
-    next unless color == computer_color_code[index]
-
-    b_dots += 1
-    delete_indexes << index
-  end
-
-  guess, computer_color_code = double_matches(delete_indexes, guess, computer_color_code)
+  guess, computer_color_code = double_matches_delete(delete_indexes, guess, computer_color_code)
 
   guess.each do |color|
     delete_index = nil

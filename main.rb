@@ -36,11 +36,11 @@
 #         - [x] Get user input
 #             - [x] If Y,
 #                 - [x] PlayGame as normal
-#             - [ ] If N,
-#                 - [ ] Ask user for color code
-#                 - [ ] If any color not in ACCEPTABLE_COLORS, re ask until code is acceptable
-#                 - [ ]  PlayGame with updated logic, see Step 3.
-#             - [ ] Else re-ask, with message, “Invalid. Do you want to be the guesser? [Y/N] ”
+#             - [x] If N,
+#                 - [x] Ask user for color code
+#                 - [x] If any color not in ACCEPTABLE_COLORS, re ask until code is acceptable
+#                 - [x]  PlayGame with updated logic, see Step 3.
+#             - [x] Else re-ask, with message, “Invalid. Do you want to be the guesser? [Y/N] ”
 
 # Step 3:
 # “Build it out so that the computer will guess if you decide to choose your own secret color.”
@@ -87,7 +87,7 @@ def user_code
   code.each do |color|
     redo_needed = true unless ACCEPTABLE_COLORS.include?(color)
   end
-  code = user_guess if redo_needed
+  code = user_code if redo_needed
 
   code
 end

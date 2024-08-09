@@ -189,17 +189,14 @@ end
 # p ununiq.length
 # [black_dots, ununiq.uniq.length]
 
-def evaluate_round(guess, computer_color_code, bdots,
-                   wdots)
+def evaluate_round(guess, computer_color_code, bdots, wdots)
   if guess == computer_color_code
     p "Winner"
     true
-  elsif computer_color_code.any? { |element| guess.include?(element) }
-    bdots, wdots = compare_codes(guess, computer_color_code)
-    p "Correct Color and Position: #{bdots}"
-    p "Correct Color but Wrong Position: #{wdots}"
-    false
   else
+    if computer_color_code.any? { |element| guess.include?(element) }
+      bdots, wdots = compare_codes(guess, computer_color_code)
+    end
     p "Correct Color and Position: #{bdots}"
     p "Correct Color but Wrong Position: #{wdots}"
     false
@@ -207,26 +204,25 @@ def evaluate_round(guess, computer_color_code, bdots,
 end
 
 def play_round(computer_color_code)
-  white_dots_correct_color_wrong_position = 0
-  black_dots_correct_color_correct_position = 0
+  w_dots = 0
+  b_dots = 0
+
+  redo_needed = false
 
   guess = user_guess
 
   guess = user_guess unless guess.length == 4
 
-  redo_needed = false
   guess.each do |color|
     redo_needed = true unless ACCEPTABLE_COLORS.include?(color)
   end
   guess = user_guess if redo_needed
 
-  evaluate_round(guess, computer_color_code, black_dots_correct_color_correct_position,
-                 white_dots_correct_color_wrong_position)
+  evaluate_round(guess, computer_color_code, b_dots, w_dots)
 end
 
-computer_color_code = get_color_code(ACCEPTABLE_COLORS)
-
-def play_game(computer_color_code)
+def play_game
+  computer_color_code = get_color_code(ACCEPTABLE_COLORS)
   end_game = false
   12.times do
     end_game = play_round(computer_color_code)
@@ -235,4 +231,4 @@ def play_game(computer_color_code)
   p computer_color_code
 end
 
-play_game(computer_color_code)
+play_game

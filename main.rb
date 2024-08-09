@@ -72,42 +72,55 @@ def user_guess
   guess
 end
 
-def compare_codes(my_guess, the_computer_color_code)
-  # Try removing elements from array once a match is hit
-  bd = 0
-  wd = 0
-
-  guess = my_guess.clone
-  computer_color_code = the_computer_color_code.clone
-
-  delete_indexes = []
-
-  guess.each_with_index do |color, index|
-    next unless color == computer_color_code[index]
-
-    bd += 1
-    delete_indexes << index
-  end
-
+def double_matches(delete_indexes, guess, computer_color_code)
   delete_indexes = delete_indexes.reverse
   delete_indexes.each do |index|
     guess.delete_at(index)
     computer_color_code.delete_at(index)
   end
+  [guess, computer_color_code]
+end
+
+def bd_increment(b_dots)
+  b_dots += 1
+  b_dots
+end
+
+def compare_codes(user_guess, random_color_code, b_dots, w_dots)
+  # Try removing elements from array once a match is hit
+  # Work on clone to not permanently remove elements from original
+
+  guess = user_guess.clone
+  computer_color_code = random_color_code.clone
+
+  delete_indexes = []
+
+  p b_dots
+  bd_increment(b_dots)
+  p b_dots
+
+  guess.each_with_index do |color, index|
+    next unless color == computer_color_code[index]
+
+    b_dots += 1
+    delete_indexes << index
+  end
+
+  guess, computer_color_code = double_matches(delete_indexes, guess, computer_color_code)
 
   guess.each do |color|
     delete_index = nil
     computer_color_code.each_with_index do |computer_color, computer_index|
       next unless color == computer_color
 
-      wd += 1
+      w_dots += 1
       delete_index = computer_index
       break
     end
     computer_color_code.delete_at(delete_index) if delete_index
   end
 
-  [bd, wd]
+  [b_dots, w_dots]
 end
 
 def equality_check(guess, computer_color_code)
@@ -117,14 +130,14 @@ def equality_check(guess, computer_color_code)
   true
 end
 
-def evaluate_round(guess, computer_color_code, bdots, wdots)
+def evaluate_round(guess, computer_color_code, b_dots, w_dots)
   return true if equality_check(guess, computer_color_code)
 
   if computer_color_code.any? { |element| guess.include?(element) }
-    bdots, wdots = compare_codes(guess, computer_color_code)
+    b_dots, w_dots = compare_codes(guess, computer_color_code, b_dots, w_dots)
   end
-  p "Correct Color and Position: #{bdots}"
-  p "Correct Color but Wrong Position: #{wdots}"
+  p "Correct Color and Position: #{b_dots}"
+  p "Correct Color but Wrong Position: #{w_dots}"
   false
 end
 

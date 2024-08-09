@@ -30,12 +30,12 @@
 # Step 2:
 # “Now refactor your code to allow the human player to choose whether they want to be the creator of the secret code
 # or the guesser.”
-#     - [ ] Update PlayGame
-#         - [ ] Create true/false boolean value is_guesser
-#         - [ ] Ask user “Do you want to be the guesser? [Y/N] ”
-#         - [ ] Get user input
-#             - [ ] If Y,
-#                 - [ ] PlayGame as normal
+#     - [x] Update PlayGame
+#         - [x] Create true/false boolean value is_guesser
+#         - [x] Ask user “Do you want to be the guesser? [Y/N] ”
+#         - [x] Get user input
+#             - [x] If Y,
+#                 - [x] PlayGame as normal
 #             - [ ] If N,
 #                 - [ ] Ask user for color code
 #                 - [ ] If any color not in ACCEPTABLE_COLORS, re ask until code is acceptable
@@ -70,6 +70,26 @@ def user_guess
     guess << gets.chomp
   end
   guess
+end
+
+def user_code
+  code = []
+  puts "What's your four-color code? (ex: blue, blue, blue, blue)"
+  puts "Available Colors: blue, red, orange, yellow, purple, green "
+  4.times do |time|
+    puts "Color #{time + 1}: "
+    code << gets.chomp
+  end
+  code = user_code unless code.length == 4
+
+  redo_needed = false
+
+  code.each do |color|
+    redo_needed = true unless ACCEPTABLE_COLORS.include?(color)
+  end
+  code = user_guess if redo_needed
+
+  code
 end
 
 def double_matches_delete(delete_indexes, guess, computer_color_code)
@@ -181,7 +201,7 @@ def play_game
     puts "You are guessing the computer's code!"
     user_guessing_computer_code
   else
-    puts "Not ready yet!"
+    code = user_code
   end
 end
 

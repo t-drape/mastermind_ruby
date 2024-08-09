@@ -189,18 +189,22 @@ end
 # p ununiq.length
 # [black_dots, ununiq.uniq.length]
 
+def equality_check(guess, computer_color_code)
+  return unless guess == computer_color_code
+
+  p "Winner"
+  true
+end
+
 def evaluate_round(guess, computer_color_code, bdots, wdots)
-  if guess == computer_color_code
-    p "Winner"
-    true
-  else
-    if computer_color_code.any? { |element| guess.include?(element) }
-      bdots, wdots = compare_codes(guess, computer_color_code)
-    end
-    p "Correct Color and Position: #{bdots}"
-    p "Correct Color but Wrong Position: #{wdots}"
-    false
+  return true if equality_check(guess, computer_color_code)
+
+  if computer_color_code.any? { |element| guess.include?(element) }
+    bdots, wdots = compare_codes(guess, computer_color_code)
   end
+  p "Correct Color and Position: #{bdots}"
+  p "Correct Color but Wrong Position: #{wdots}"
+  false
 end
 
 def play_round(computer_color_code)

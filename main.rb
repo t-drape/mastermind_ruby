@@ -101,6 +101,7 @@ def single_match(guess, computer_color_code, w_dots)
       break
     end
   end
+  w_dots
 end
 
 def compare_codes(user_guess, random_color_code, b_dots, w_dots)
@@ -116,15 +117,7 @@ def compare_codes(user_guess, random_color_code, b_dots, w_dots)
 
   guess, computer_color_code = double_matches_delete(delete_indexes, guess, computer_color_code)
 
-  guess.each do |color|
-    computer_color_code.each_with_index do |computer_color, computer_index|
-      next unless color == computer_color
-
-      w_dots += 1
-      computer_color_code.delete_at(computer_index)
-      break
-    end
-  end
+  w_dots = single_match(guess, computer_color_code, w_dots)
 
   [b_dots, w_dots]
 end

@@ -54,8 +54,6 @@
 
 ACCEPTABLE_COLORS = %w[blue red orange yellow purple green].freeze
 
-user_guessing = true
-
 def get_color_code(available_colors)
   random = Random.new
   color_code = []
@@ -184,6 +182,15 @@ def play_round(computer_color_code)
   evaluate_round(guess, computer_color_code, b_dots, w_dots)
 end
 
+def play_computer_guessing_round(user_code)
+  w_dots = 0
+  b_dots = 0
+  random_computer_guess = get_color_code(ACCEPTABLE_COLORS)
+  puts "Random Computer Guess!"
+  p random_computer_guess
+  evaluate_round(random_computer_guess, user_code, b_dots, w_dots)
+end
+
 def user_pick
   puts "Do you want to create the code? [Y/N] "
   user_choice = gets.chomp
@@ -203,7 +210,12 @@ def user_guessing_computer_code
 end
 
 def computer_guessing_user_code
-  user_code
+  code = user_code
+  end_game = false
+  12.times do
+    end_game = play_computer_guessing_round(code)
+    break if end_game
+  end
 end
 
 def play_game

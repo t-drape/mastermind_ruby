@@ -54,6 +54,8 @@
 
 ACCEPTABLE_COLORS = %w[blue red orange yellow purple green].freeze
 
+user_guessing = true
+
 def get_color_code(available_colors)
   random = Random.new
   color_code = []
@@ -72,14 +74,7 @@ def user_guess
   guess
 end
 
-def user_code
-  code = []
-  puts "What's your four-color code? (ex: blue, blue, blue, blue)"
-  puts "Available Colors: blue, red, orange, yellow, purple, green "
-  4.times do |time|
-    puts "Color #{time + 1}: "
-    code << gets.chomp
-  end
+def check_user_input(code)
   code = user_code unless code.length == 4
 
   redo_needed = false
@@ -90,6 +85,17 @@ def user_code
   code = user_code if redo_needed
 
   code
+end
+
+def user_code
+  code = []
+  puts "What's your four-color code? (ex: blue, blue, blue, blue)"
+  puts "Available Colors: blue, red, orange, yellow, purple, green "
+  4.times do |time|
+    puts "Color #{time + 1}: "
+    code << gets.chomp
+  end
+  check_user_input(code)
 end
 
 def double_matches_delete(delete_indexes, guess, computer_color_code)
@@ -196,12 +202,18 @@ def user_guessing_computer_code
   p computer_color_code
 end
 
+def computer_guessing_user_code
+  user_code
+end
+
 def play_game
   if user_pick
     puts "You are guessing the computer's code!"
     user_guessing_computer_code
+
   else
-    code = user_code
+    puts "The computer is guessing your code!"
+    computer_guessing_user_code
   end
 end
 

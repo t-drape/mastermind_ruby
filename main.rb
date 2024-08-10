@@ -96,32 +96,32 @@ def user_code
   check_user_input(code)
 end
 
-def double_matches_delete(delete_indexes, guess, computer_color_code)
+def double_matches_delete(delete_indexes, guess, color_code)
   delete_indexes = delete_indexes.reverse
   delete_indexes.each do |index|
     guess.delete_at(index)
-    computer_color_code.delete_at(index)
+    color_code.delete_at(index)
   end
-  [guess, computer_color_code]
+  [guess, color_code]
 end
 
-def double_matches(guess, computer_color_code)
+def double_matches(guess, color_code)
   indexes = []
   guess.each_with_index do |color, index|
-    next unless color == computer_color_code[index]
+    next unless color == color_code[index]
 
     indexes << index
   end
   indexes
 end
 
-def single_match(guess, computer_color_code, w_dots)
+def single_match(guess, color_code, w_dots)
   guess.each do |color|
-    computer_color_code.each_with_index do |computer_color, computer_index|
+    color_code.each_with_index do |computer_color, computer_index|
       next unless color == computer_color
 
       w_dots += 1
-      computer_color_code.delete_at(computer_index)
+      color_code.delete_at(computer_index)
       break
     end
   end
@@ -133,38 +133,49 @@ def compare_codes(user_guess, random_color_code, b_dots, w_dots)
   # Work on clone to not permanently remove elements from original
 
   guess = user_guess.clone
-  computer_color_code = random_color_code.clone
+  color_code = random_color_code.clone
 
-  delete_indexes = double_matches(guess, computer_color_code)
+  delete_indexes = double_matches(guess, color_code)
 
   b_dots += delete_indexes.length
 
-  guess, computer_color_code = double_matches_delete(delete_indexes, guess, computer_color_code)
+  guess, color_code = double_matches_delete(delete_indexes, guess, color_code)
 
-  w_dots = single_match(guess, computer_color_code, w_dots)
+  w_dots = single_match(guess, color_code, w_dots)
 
   [b_dots, w_dots]
 end
 
-def equality_check(guess, computer_color_code)
-  return unless guess == computer_color_code
+def equality_check(guess, color_code)
+  return unless guess == color_code
 
   p "Winner"
   true
 end
 
-def evaluate_round(guess, computer_color_code, b_dots, w_dots)
-  return true if equality_check(guess, computer_color_code)
+def evaluate_round(guess, color_code, b_dots, w_dots)
+  return true if equality_check(guess, color_code)
 
-  if computer_color_code.any? { |element| guess.include?(element) }
-    b_dots, w_dots = compare_codes(guess, computer_color_code, b_dots, w_dots)
+  if color_code.any? { |element| guess.include?(element) }
+    b_dots, w_dots = compare_codes(guess, color_code, b_dots, w_dots)
   end
   p "Correct Color and Position: #{b_dots}"
   p "Correct Color but Wrong Position: #{w_dots}"
   false
 end
 
-def play_round(computer_color_code)
+def computer_evaluate_round(guess, color_code, b_dots, w_dots)
+  return nil if equality_check(guess, color_code)
+
+  if color_code.any? { |element| guess.include?(element) }
+    b_dots, w_dots = compare_codes(guess, color_code, b_dots, w_dots)
+  end
+  p "Correct Color and Position: #{b_dots}"
+  p "Correct Color but Wrong Position: #{w_dots}"
+  [b_dots, w_dots]
+end
+
+def play_round(color_code)
   w_dots = 0
   b_dots = 0
 
@@ -179,16 +190,17 @@ def play_round(computer_color_code)
   end
   guess = user_guess if redo_needed
 
-  evaluate_round(guess, computer_color_code, b_dots, w_dots)
+  evaluate_round(guess, color_code, b_dots, w_dots)
 end
 
-def play_computer_guessing_round(user_code)
+def play_computer_guessing_round(computer_guess, user_code)
   w_dots = 0
   b_dots = 0
-  random_computer_guess = get_color_code(ACCEPTABLE_COLORS)
-  puts "Random Computer Guess!"
-  p random_computer_guess
-  evaluate_round(random_computer_guess, user_code, b_dots, w_dots)
+  return_value = computer_evaluate_round(computer_guess, user_code, b_dots, w_dots)
+  return true unless return_value
+
+  b_dots, w_dots = return_value
+  b_dots == 4
 end
 
 def user_pick
@@ -200,22 +212,25 @@ def user_pick
 end
 
 def user_guessing_computer_code
-  computer_color_code = get_color_code(ACCEPTABLE_COLORS)
+  color_code = get_color_code(ACCEPTABLE_COLORS)
   end_game = false
   12.times do
-    end_game = play_round(computer_color_code)
+    end_game = play_round(color_code)
     break if end_game
   end
-  p computer_color_code
+  p color_code
 end
 
 def computer_guessing_user_code
   code = user_code
   end_game = false
-  12.times do
-    end_game = play_computer_guessing_round(code)
+  6.times do |time|
+    guess = Array.new(4, ACCEPTABLE_COLORS[time])
+    end_game = play_computer_guessing_round(guess, code)
+    p guess if end_game
     break if end_game
   end
+  puts "The computer guessed your code!" if end_game
 end
 
 def play_game

@@ -44,13 +44,13 @@
 
 # Step 3:
 # “Build it out so that the computer will guess if you decide to choose your own secret color.”
-#     - [ ] Model Mastermind strategy
-#     - [ ] After each guess,
-#     - [ ] Learn from last guesses,
-#     - [ ] Make more educated guess
-#     - [ ] Make computer beatable, but not easy (medium)
-#     - [ ] Create game logic
-#     - [ ] Play 12 Rounds as normal
+#     - [x] Model Mastermind strategy
+#     - [x] After each guess,
+#     - [x] Learn from last guesses,
+#     - [x] Make more educated guess
+#     - [x] Make computer beatable, but not easy (medium)
+#     - [x] Create game logic
+#     - [x] Play 12 Rounds as normal
 
 ACCEPTABLE_COLORS = %w[blue red orange yellow purple green].freeze
 

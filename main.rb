@@ -146,15 +146,8 @@ def compare_codes(user_guess, random_color_code, b_dots, w_dots)
   [b_dots, w_dots]
 end
 
-def equality_check(guess, color_code)
-  return unless guess == color_code
-
-  p "Winner"
-  true
-end
-
 def evaluate_round(guess, color_code, b_dots, w_dots)
-  return true if equality_check(guess, color_code)
+  return true if guess == color_code
 
   if color_code.any? { |element| guess.include?(element) }
     b_dots, w_dots = compare_codes(guess, color_code, b_dots, w_dots)

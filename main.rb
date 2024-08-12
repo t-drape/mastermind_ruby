@@ -165,13 +165,11 @@ def evaluate_round(guess, color_code, b_dots, w_dots)
 end
 
 def computer_evaluate_round(guess, color_code, b_dots, w_dots)
-  return nil if equality_check(guess, color_code)
-
   if color_code.any? { |element| guess.include?(element) }
     b_dots, w_dots = compare_codes(guess, color_code, b_dots, w_dots)
   end
-  p "Correct Color and Position: #{b_dots}"
-  p "Correct Color but Wrong Position: #{w_dots}"
+  return [b_dots, w_dots] if equality_check(guess, color_code)
+
   [b_dots, w_dots]
 end
 
@@ -193,14 +191,14 @@ def play_round(color_code)
   evaluate_round(guess, color_code, b_dots, w_dots)
 end
 
-def play_computer_guessing_round(computer_guess, user_code)
-  w_dots = 0
+def play_computer_guessing_round(computer_guess, user_code, cca)
   b_dots = 0
-  return_value = computer_evaluate_round(computer_guess, user_code, b_dots, w_dots)
-  return true unless return_value
-
-  b_dots, w_dots = return_value
-  b_dots == 4
+  w_dots = 0
+  bd, wd = computer_evaluate_round(computer_guess, user_code, b_dots, w_dots)
+  bd.times do
+    cca << computer_guess[0]
+  end
+  bd == 4
 end
 
 def user_pick
@@ -222,15 +220,35 @@ def user_guessing_computer_code
 end
 
 def computer_guessing_user_code
+  cca = []
   code = user_code
   end_game = false
+  future_times = 0
   6.times do |time|
+    puts "---Attempt No: #{time + 1}---"
     guess = Array.new(4, ACCEPTABLE_COLORS[time])
-    end_game = play_computer_guessing_round(guess, code)
+    p guess
+    end_game = play_computer_guessing_round(guess, code, cca)
     p guess if end_game
     break if end_game
+
+    next unless cca.length == 4
+
+    future_times = 11 - time
+    break
   end
+  future_times.times do |time|
+    p "---Attempt No: #{(12 - (future_times - time)) + 1}---"
+    cca = cca.shuffle
+    p cca
+    if cca == code
+      end_game = true
+      break
+    end
+  end
+
   puts "The computer guessed your code!" if end_game
+  puts "You beat the computer!" unless end_game
 end
 
 def play_game

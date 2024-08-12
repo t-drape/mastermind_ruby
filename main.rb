@@ -209,8 +209,18 @@ def user_guessing_computer_code
     break if end_game
   end
   p color_code
-  puts "You Guessed the Computer's Code!" if end_game
-  puts "You did not Guess the Computer's Code!" unless end_game
+  ending_message(end_game, true)
+  # puts "You Guessed the Computer's Code!" if end_game
+  # puts "You did not Guess the Computer's Code!" unless end_game
+end
+
+def ending_message(won_game, guessing)
+  message = if guessing
+              won_game ? "You Guessed the Computer's Code!" : "You did not Guess the Computer's Code!"
+            else
+              won_game ? "The computer guessed your code!" : "You beat the computer!"
+            end
+  puts message
 end
 
 # MAYBE SWITCH TIMES LOOP TO EACH WITH INDEX
@@ -265,9 +275,10 @@ def computer_guessing_user_code
   #     break
   #   end
   # end
-
-  puts "The computer guessed your code!" if end_game
-  puts "You beat the computer!" unless end_game
+  #
+  ending_message(end_game, false)
+  # puts "The computer guessed your code!" if end_game
+  # puts "You beat the computer!" unless end_game
 end
 
 def play_game

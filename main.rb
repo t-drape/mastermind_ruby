@@ -168,8 +168,6 @@ def computer_evaluate_round(guess, color_code, b_dots, w_dots)
   if color_code.any? { |element| guess.include?(element) }
     b_dots, w_dots = compare_codes(guess, color_code, b_dots, w_dots)
   end
-  return [b_dots, w_dots] if equality_check(guess, color_code)
-
   [b_dots, w_dots]
 end
 
@@ -229,7 +227,6 @@ def computer_guessing_user_code
     guess = Array.new(4, ACCEPTABLE_COLORS[time])
     p guess
     end_game = play_computer_guessing_round(guess, code, cca)
-    p guess if end_game
     break if end_game
 
     next unless cca.length == 4

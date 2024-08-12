@@ -203,11 +203,14 @@ end
 def user_guessing_computer_code
   color_code = get_color_code(ACCEPTABLE_COLORS)
   end_game = false
-  12.times do
+  12.times do |time|
+    puts "---Attempt No: #{time + 1}---"
     end_game = play_round(color_code)
     break if end_game
   end
   p color_code
+  puts "You Guessed the Computer's Code!" if end_game
+  puts "You did not Guess the Computer's Code!" unless end_game
 end
 
 def computer_guessing_user_code

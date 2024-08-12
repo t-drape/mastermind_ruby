@@ -213,32 +213,58 @@ def user_guessing_computer_code
   puts "You did not Guess the Computer's Code!" unless end_game
 end
 
-def computer_guessing_user_code
-  cca = []
-  code = user_code
-  end_game = false
-  future_times = 0
-  6.times do |time|
+# MAYBE SWITCH TIMES LOOP TO EACH WITH INDEX
+# NEED GLOBAL VARIABLE FOR ROUNDS!!!!!!!
+
+def single_color_computer_guess(code, cca)
+  ACCEPTABLE_COLORS.length.times do |time|
     puts "---Attempt No: #{time + 1}---"
     guess = Array.new(4, ACCEPTABLE_COLORS[time])
     p guess
     end_game = play_computer_guessing_round(guess, code, cca)
-    break if end_game
-
+    return cca if end_game
     next unless cca.length == 4
 
-    future_times = 11 - time
-    break
+    return cca
   end
-  future_times.times do |time|
-    p "---Attempt No: #{(12 - (future_times - time)) + 1}---"
+end
+
+def shuffled_guesses(code, cca)
+  6.times do |time|
+    p "---Attempt No: #{time + 1}---"
     cca = cca.shuffle
     p cca
-    if cca == code
-      end_game = true
-      break
-    end
+    return true if cca == code
   end
+  false
+end
+
+def computer_guessing_user_code
+  cca = []
+  code = user_code
+  # 6.times do |time|
+  #   puts "---Attempt No: #{time + 1}---"
+  #   guess = Array.new(4, ACCEPTABLE_COLORS[time])
+  #   p guess
+  #   end_game = play_computer_guessing_round(guess, code, cca)
+  #   break if end_game
+
+  #   next unless cca.length == 4
+
+  #   future_times = 11 - time
+  #   break
+  # end
+  cca = single_color_computer_guess(code, cca)
+  end_game = cca == code ? true : shuffled_guesses(code, cca)
+  # 6.times do |time|
+  #   p "---Attempt No: #{(12 - (future_times - time)) + 1}---"
+  #   cca = cca.shuffle
+  #   p cca
+  #   if cca == code
+  #     end_game = true
+  #     break
+  #   end
+  # end
 
   puts "The computer guessed your code!" if end_game
   puts "You beat the computer!" unless end_game
@@ -255,4 +281,5 @@ def play_game
   end
 end
 
-play_game
+# play_game
+computer_guessing_user_code

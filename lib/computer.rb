@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Model to represent computer in MasterMind Project
 class Computer
   include Evaluating

@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 # Module to evaluate each round of play for MasterMind Project
 module Evaluating
   def double_matches_delete(delete_indexes, guess, color_code)
@@ -31,3 +33,4 @@ module Evaluating
     end
     w_dots
   end
+end

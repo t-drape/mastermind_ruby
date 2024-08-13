@@ -292,5 +292,4 @@ def play_game
   end
 end
 
-# play_game
-computer_guessing_user_code
+play_game

@@ -277,25 +277,34 @@ class User
     puts message
   end
 
+  def get_color_code(available_colors)
+    random = Random.new
+    color_code = []
+    4.times { color_code << available_colors[random.rand(5)] }
+    color_code
+  end
+
   def user_guessing_computer_code
     color_code = get_color_code(ACCEPTABLE_COLORS)
     12.times do |time|
       puts "---Attempt No: #{time + 1}---"
-      @is_winner = play_round(color_code, user_guess)
+      @is_winner = user_evaluate_round(user_guess, color_code, 0, 0)
       break if @is_winner
     end
     p color_code
     ending_message
   end
-end
 
-def start_game
-  puts "Whats Your Name? "
-  tj = User.new(gets.chomp)
-  comp = Computer.new(tj.choice)
-  comp.computer_guessing_user_code(tj.code)
-  tj.is_winner = !comp.is_winner
-  tj.ending_message
+  def user_evaluate_round(guess, color_code, b_dots, w_dots)
+    return true if guess == color_code
+
+    if color_code.any? { |element| guess.include?(element) }
+      b_dots, w_dots = compare_codes(guess, color_code, b_dots, w_dots)
+    end
+    p "Correct Color and Position: #{b_dots}"
+    p "Correct Color but Wrong Position: #{w_dots}"
+    false
+  end
 end
 
 # A single class to hold all gameplay for MasterMind Project!

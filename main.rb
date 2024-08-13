@@ -297,7 +297,7 @@ end
 
 # Model to represent computer in MasterMind Project
 class Computer
-  attr_accessor :choice, :correct_color_array, :bd
+  attr_accessor :choice, :correct_color_array, :bd, :is_winner
 
   def initialize(job)
     @choice = !job
@@ -323,10 +323,11 @@ class Computer
   def shuffled_guesses(code)
     @rounds.times do |time|
       p "---Attempt No: #{12 - (@rounds - time) + 1}---"
-      former = @cca
-      @cca = @cca.shuffle until @cca != former
       p @cca
       return true if @cca == code
+
+      former = @cca
+      @cca = @cca.shuffle until @cca != former
     end
     false
   end
@@ -371,18 +372,18 @@ class Computer
     return if choice
 
     @cca = single_color_computer_guess(user_provided_code)
-    @is_winner = @cca == user_provided_code ? true : shuffled_guesses(user_provided_code)
+    @is_winner = shuffled_guesses(user_provided_code)
   end
 end
 
 # Model to represent user in MasterMind Project
 class User
-  attr_accessor :choice, :code, :guess
+  attr_accessor :choice, :code, :guess, :is_winner
 
   def initialize(name)
     @name = name
     @choice = user_pick
-    @is_winner = nil
+    @is_winner = false
     @code = current_code
     @guess = current_guess
   end
@@ -451,5 +452,7 @@ def start_game
   # color_code = get_color_code(ACCEPTABLE_COLORS)
   # tj.user_guessing_computer_code(color_code)
   comp.computer_guessing_user_code(tj.code)
+  tj.is_winner = !comp.is_winner
+  tj.ending_message
 end
 start_game

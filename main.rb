@@ -61,41 +61,6 @@ def get_color_code(available_colors)
   color_code
 end
 
-def user_guess
-  guess = []
-  puts "What's your four-color guess? (ex: blue, blue, blue, blue)"
-  puts "Available Colors: blue, red, orange, yellow, purple, green "
-  4.times do |time|
-    puts "Color #{time + 1}: "
-    guess << gets.chomp
-  end
-  guess
-end
-
-def check_user_input(code)
-  code = user_code unless code.length == 4
-
-  redo_needed = false
-
-  code.each do |color|
-    redo_needed = true unless ACCEPTABLE_COLORS.include?(color)
-  end
-  code = user_code if redo_needed
-
-  code
-end
-
-def user_code
-  code = []
-  puts "What's your four-color code? (ex: blue, blue, blue, blue)"
-  puts "Available Colors: blue, red, orange, yellow, purple, green "
-  4.times do |time|
-    puts "Color #{time + 1}: "
-    code << gets.chomp
-  end
-  check_user_input(code)
-end
-
 def double_matches_delete(delete_indexes, guess, color_code)
   delete_indexes = delete_indexes.reverse
   delete_indexes.each do |index|
@@ -157,13 +122,6 @@ def user_evaluate_round(guess, color_code, b_dots, w_dots)
   false
 end
 
-def computer_evaluate_round(guess, color_code, b_dots, w_dots)
-  if color_code.any? { |element| guess.include?(element) }
-    b_dots, w_dots = compare_codes(guess, color_code, b_dots, w_dots)
-  end
-  [b_dots, w_dots]
-end
-
 def play_round(color_code, guess)
   w_dots = 0
   b_dots = 0
@@ -182,116 +140,8 @@ def play_round(color_code, guess)
   user_evaluate_round(guess, color_code, b_dots, w_dots)
 end
 
-def play_computer_guessing_round(computer_guess, user_code, cca)
-  b_dots = 0
-  w_dots = 0
-  bd = computer_evaluate_round(computer_guess, user_code, b_dots, w_dots)[0]
-  bd.times do
-    cca << computer_guess[0]
-  end
-  bd == 4
-end
-
-def user_pick
-  puts "Do you want to create the code? [Y/N] "
-  user_choice = gets.chomp
-  user_pick unless %w[Y N].include?(user_choice)
-
-  user_choice == "N"
-end
-
-def user_guessing_computer_code
-  color_code = get_color_code(ACCEPTABLE_COLORS)
-  end_game = false
-  12.times do |time|
-    puts "---Attempt No: #{time + 1}---"
-    end_game = play_round(color_code)
-    break if end_game
-  end
-  p color_code
-  ending_message(end_game, true)
-  # puts "You Guessed the Computer's Code!" if end_game
-  # puts "You did not Guess the Computer's Code!" unless end_game
-end
-
-def ending_message(won_game, guessing)
-  message = if guessing
-              won_game ? "You Guessed the Computer's Code!" : "You did not Guess the Computer's Code!"
-            else
-              won_game ? "The computer guessed your code!" : "You beat the computer!"
-            end
-  puts message
-end
-
 # MAYBE SWITCH TIMES LOOP TO EACH WITH INDEX
 # NEED GLOBAL VARIABLE FOR ROUNDS!!!!!!!
-
-def single_color_computer_guess(code, cca)
-  ACCEPTABLE_COLORS.length.times do |time|
-    puts "---Attempt No: #{time + 1}---"
-    guess = Array.new(4, ACCEPTABLE_COLORS[time])
-    p guess
-    end_game = play_computer_guessing_round(guess, code, cca)
-    return cca if end_game
-    next unless cca.length == 4
-
-    return cca
-  end
-end
-
-def shuffled_guesses(code, cca)
-  6.times do |time|
-    p "---Attempt No: #{time + 1}---"
-    cca = cca.shuffle
-    p cca
-    return true if cca == code
-  end
-  false
-end
-
-def computer_guessing_user_code
-  cca = []
-  code = user_code
-  # 6.times do |time|
-  #   puts "---Attempt No: #{time + 1}---"
-  #   guess = Array.new(4, ACCEPTABLE_COLORS[time])
-  #   p guess
-  #   end_game = play_computer_guessing_round(guess, code, cca)
-  #   break if end_game
-
-  #   next unless cca.length == 4
-
-  #   future_times = 11 - time
-  #   break
-  # end
-  cca = single_color_computer_guess(code, cca)
-  end_game = cca == code ? true : shuffled_guesses(code, cca)
-  # 6.times do |time|
-  #   p "---Attempt No: #{(12 - (future_times - time)) + 1}---"
-  #   cca = cca.shuffle
-  #   p cca
-  #   if cca == code
-  #     end_game = true
-  #     break
-  #   end
-  # end
-  #
-  # ending_message(end_game, false)
-  # puts "The computer guessed your code!" if end_game
-  # puts "You beat the computer!" unless end_game
-end
-
-# OPPOSITE!!!
-def play_game
-  if user_pick
-    puts "You are guessing the computer's code!"
-    user_guessing_computer_code
-
-  else
-    puts "The computer is guessing your code!"
-    computer_guessing_user_code
-  end
-end
 
 # play_game
 

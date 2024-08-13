@@ -54,100 +54,63 @@
 
 ACCEPTABLE_COLORS = %w[blue red orange yellow purple green].freeze
 
-def get_color_code(available_colors)
-  random = Random.new
-  color_code = []
-  4.times { color_code << available_colors[random.rand(5)] }
-  color_code
-end
-
-def double_matches_delete(delete_indexes, guess, color_code)
-  delete_indexes = delete_indexes.reverse
-  delete_indexes.each do |index|
-    guess.delete_at(index)
-    color_code.delete_at(index)
-  end
-  [guess, color_code]
-end
-
-def double_matches(guess, color_code)
-  indexes = []
-  guess.each_with_index do |color, index|
-    next unless color == color_code[index]
-
-    indexes << index
-  end
-  indexes
-end
-
-def single_match(guess, color_code, w_dots)
-  guess.each do |color|
-    color_code.each_with_index do |computer_color, computer_index|
-      next unless color == computer_color
-
-      w_dots += 1
-      color_code.delete_at(computer_index)
-      break
+# Module to evaluate each round of play for MasterMind Project
+module Evaluating
+  def double_matches_delete(delete_indexes, guess, color_code)
+    delete_indexes = delete_indexes.reverse
+    delete_indexes.each do |index|
+      guess.delete_at(index)
+      color_code.delete_at(index)
     end
+    [guess, color_code]
   end
-  w_dots
-end
 
-def compare_codes(user_guess, random_color_code, b_dots, w_dots)
-  # Try removing elements from array once a match is hit
-  # Work on clone to not permanently remove elements from original
+  def double_matches(guess, color_code)
+    indexes = []
+    guess.each_with_index do |color, index|
+      next unless color == color_code[index]
 
-  guess = user_guess.clone
-  color_code = random_color_code.clone
-
-  delete_indexes = double_matches(guess, color_code)
-
-  b_dots += delete_indexes.length
-
-  guess, color_code = double_matches_delete(delete_indexes, guess, color_code)
-
-  w_dots = single_match(guess, color_code, w_dots)
-
-  [b_dots, w_dots]
-end
-
-def user_evaluate_round(guess, color_code, b_dots, w_dots)
-  return true if guess == color_code
-
-  if color_code.any? { |element| guess.include?(element) }
-    b_dots, w_dots = compare_codes(guess, color_code, b_dots, w_dots)
+      indexes << index
+    end
+    indexes
   end
-  p "Correct Color and Position: #{b_dots}"
-  p "Correct Color but Wrong Position: #{w_dots}"
-  false
+
+  def single_match(guess, color_code, w_dots)
+    guess.each do |color|
+      color_code.each_with_index do |computer_color, computer_index|
+        next unless color == computer_color
+
+        w_dots += 1
+        color_code.delete_at(computer_index)
+        break
+      end
+    end
+    w_dots
+  end
+
+  def compare_codes(user_guess, random_color_code, b_dots, w_dots)
+    # Try removing elements from array once a match is hit
+    # Work on clone to not permanently remove elements from original
+
+    guess = user_guess.clone
+    color_code = random_color_code.clone
+
+    delete_indexes = double_matches(guess, color_code)
+
+    b_dots += delete_indexes.length
+
+    guess, color_code = double_matches_delete(delete_indexes, guess, color_code)
+
+    w_dots = single_match(guess, color_code, w_dots)
+
+    [b_dots, w_dots]
+  end
 end
-
-def play_round(color_code, guess)
-  w_dots = 0
-  b_dots = 0
-
-  # redo_needed = false
-
-  # guess = user_guess
-
-  # guess = user_guess unless guess.length == 4
-
-  # guess.each do |color|
-  #   redo_needed = true unless ACCEPTABLE_COLORS.include?(color)
-  # end
-  # guess = user_guess if redo_needed
-
-  user_evaluate_round(guess, color_code, b_dots, w_dots)
-end
-
-# MAYBE SWITCH TIMES LOOP TO EACH WITH INDEX
-# NEED GLOBAL VARIABLE FOR ROUNDS!!!!!!!
-
-# play_game
 
 # Model to represent computer in MasterMind Project
 class Computer
-  attr_accessor :choice, :correct_color_array, :bd, :is_winner
+  include Evaluating
+  attr_accessor :bd, :is_winner
 
   def initialize(job)
     @choice = !job
@@ -155,16 +118,19 @@ class Computer
     @cca = check_need_for_array
     @bd = 0
     @is_winner = nil
+    @current_guess = nil
   end
 
   def check_need_for_array
-    return nil if choice
+    return nil if @choice
 
     []
   end
 
   def shuffled_guesses(code)
     @rounds.times do |time|
+      return true if @current_guess == code
+
       p "---Attempt No: #{12 - (@rounds - time) + 1}---"
       p @cca
       return true if @cca == code
@@ -179,9 +145,9 @@ class Computer
     ACCEPTABLE_COLORS.length.times do |time|
       @rounds -= 1
       puts "---Attempt No: #{time + 1}---"
-      guess = Array.new(4, ACCEPTABLE_COLORS[time])
-      p guess
-      end_game = play_computer_guessing_round(guess, code)
+      @current_guess = Array.new(4, ACCEPTABLE_COLORS[time])
+      p @current_guess
+      end_game = play_computer_guessing_round(@current_guess, code)
       return @cca if end_game
       next unless @cca.length == 4
 
@@ -212,7 +178,7 @@ class Computer
   end
 
   def computer_guessing_user_code(user_provided_code)
-    return if choice
+    return if @choice
 
     @cca = single_color_computer_guess(user_provided_code)
     @is_winner = shuffled_guesses(user_provided_code)
@@ -221,6 +187,7 @@ end
 
 # Model to represent user in MasterMind Project
 class User
+  include Evaluating
   attr_accessor :choice, :code, :is_winner
 
   def initialize(name)

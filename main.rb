@@ -185,7 +185,7 @@ end
 def play_computer_guessing_round(computer_guess, user_code, cca)
   b_dots = 0
   w_dots = 0
-  bd, wd = computer_evaluate_round(computer_guess, user_code, b_dots, w_dots)
+  bd = computer_evaluate_round(computer_guess, user_code, b_dots, w_dots)[0]
   bd.times do
     cca << computer_guess[0]
   end
@@ -293,3 +293,10 @@ def play_game
 end
 
 play_game
+
+# Model to represent computer function in MasterMind Project
+class Computer
+  def initialize(job)
+    @job = job
+  end
+end

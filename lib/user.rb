@@ -3,11 +3,12 @@ class User
   include Evaluating
   attr_accessor :choice, :code, :is_winner
 
-  def initialize(name)
+  def initialize(name, colors)
     @name = name
     @choice = nil
     @is_winner = false
     @code = nil
+    @acceptable_colors = colors
   end
 
   def current_code
@@ -23,7 +24,7 @@ class User
     code = user_guess unless code.length == 4
     redo_needed = false
     code.each do |color|
-      redo_needed = true unless ACCEPTABLE_COLORS.include?(color)
+      redo_needed = true unless @acceptable_colors.include?(color)
     end
     code = user_guess if redo_needed
     code
@@ -65,7 +66,7 @@ class User
   end
 
   def user_guessing_computer_code
-    color_code = get_color_code(ACCEPTABLE_COLORS)
+    color_code = get_color_code(@acceptable_colors)
     12.times do |time|
       puts "---Attempt No: #{time + 1}---"
       @is_winner = user_evaluate_round(user_guess, color_code, 0, 0)

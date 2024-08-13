@@ -3,13 +3,14 @@ class Computer
   include Evaluating
   attr_accessor :bd, :is_winner
 
-  def initialize(job)
+  def initialize(job, colors)
     @choice = !job
     @rounds = 12
     @cca = check_need_for_array
     @bd = 0
     @is_winner = nil
     @current_guess = nil
+    @acceptable_colors = colors
   end
 
   def check_need_for_array
@@ -33,10 +34,10 @@ class Computer
   end
 
   def single_color_computer_guess(code)
-    ACCEPTABLE_COLORS.length.times do |time|
+    @acceptable_colors.length.times do |time|
       @rounds -= 1
       puts "---Attempt No: #{time + 1}---"
-      @current_guess = Array.new(4, ACCEPTABLE_COLORS[time])
+      @current_guess = Array.new(4, @acceptable_colors[time])
       p @current_guess
       end_game = play_computer_guessing_round(@current_guess, code)
       return @cca if end_game

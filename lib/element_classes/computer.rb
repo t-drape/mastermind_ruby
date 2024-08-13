@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "eval"
+
 # Model to represent computer in MasterMind Project
 class Computer
   include Evaluating

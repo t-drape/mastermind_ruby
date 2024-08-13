@@ -52,7 +52,7 @@
 #     - [x] Create game logic
 #     - [x] Play 12 Rounds as normal
 
-require_relative "lib"
+require_relative "lib/game"
 
 MASTERMIND = Game.new
 MASTERMIND.play_game

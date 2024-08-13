@@ -1,5 +1,8 @@
 # frozen_string_literal: true
 
+require_relative "element_classes/computer"
+require_relative "element_classes/user"
+
 # A single class to hold all gameplay for MasterMind Project!
 class Game
   ACCEPTABLE_COLORS = %w[blue red orange yellow purple green].freeze
@@ -20,7 +23,7 @@ class Game
   def play_game
     introduce
     if @user.choice
-      comp = Computer.new(@user.choice)
+      comp = Computer.new(@user.choice, ACCEPTABLE_COLORS)
       comp.computer_guessing_user_code(@user.code)
       @user.is_winner = !comp.is_winner
       @user.ending_message

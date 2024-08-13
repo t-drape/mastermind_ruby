@@ -1,5 +1,7 @@
 # frozen_string_literal: true
 
+require_relative "eval"
+
 # Model to represent user in MasterMind Project
 class User
   include Evaluating

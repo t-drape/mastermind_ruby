@@ -146,7 +146,7 @@ def compare_codes(user_guess, random_color_code, b_dots, w_dots)
   [b_dots, w_dots]
 end
 
-def evaluate_round(guess, color_code, b_dots, w_dots)
+def user_evaluate_round(guess, color_code, b_dots, w_dots)
   return true if guess == color_code
 
   if color_code.any? { |element| guess.include?(element) }
@@ -179,7 +179,7 @@ def play_round(color_code, guess)
   # end
   # guess = user_guess if redo_needed
 
-  evaluate_round(guess, color_code, b_dots, w_dots)
+  user_evaluate_round(guess, color_code, b_dots, w_dots)
 end
 
 def play_computer_guessing_round(computer_guess, user_code, cca)
@@ -313,13 +313,6 @@ class Computer
     []
   end
 
-  def get_color_code(available_colors)
-    random = Random.new
-    color_code = []
-    4.times { color_code << available_colors[random.rand(5)] }
-    color_code
-  end
-
   def shuffled_guesses(code)
     @rounds.times do |time|
       p "---Attempt No: #{12 - (@rounds - time) + 1}---"
@@ -378,22 +371,17 @@ end
 
 # Model to represent user in MasterMind Project
 class User
-  attr_accessor :choice, :code, :guess, :is_winner
+  attr_accessor :choice, :code, :is_winner
 
   def initialize(name)
     @name = name
     @choice = user_pick
     @is_winner = false
     @code = current_code
-    @guess = current_guess
   end
 
   def current_code
     @choice ? user_guess : nil
-  end
-
-  def current_guess
-    @choice ? nil : user_guess
   end
 
   def check_user_input(code)
@@ -437,7 +425,7 @@ class User
   def user_guessing_computer_code(color_code)
     12.times do |time|
       puts "---Attempt No: #{time + 1}---"
-      @is_winner = play_round(color_code, @current_guess)
+      @is_winner = play_round(color_code, user_guess)
       break if @is_winner
     end
     p color_code
@@ -449,8 +437,7 @@ def start_game
   puts "Whats Your Name? "
   tj = User.new(gets.chomp)
   comp = Computer.new(tj.choice)
-  # color_code = get_color_code(ACCEPTABLE_COLORS)
-  # tj.user_guessing_computer_code(color_code)
+  color_code = get_color_code(ACCEPTABLE_COLORS)
   comp.computer_guessing_user_code(tj.code)
   tj.is_winner = !comp.is_winner
   tj.ending_message

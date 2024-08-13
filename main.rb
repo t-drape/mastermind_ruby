@@ -164,20 +164,20 @@ def computer_evaluate_round(guess, color_code, b_dots, w_dots)
   [b_dots, w_dots]
 end
 
-def play_round(color_code)
+def play_round(color_code, guess)
   w_dots = 0
   b_dots = 0
 
-  redo_needed = false
+  # redo_needed = false
 
-  guess = user_guess
+  # guess = user_guess
 
-  guess = user_guess unless guess.length == 4
+  # guess = user_guess unless guess.length == 4
 
-  guess.each do |color|
-    redo_needed = true unless ACCEPTABLE_COLORS.include?(color)
-  end
-  guess = user_guess if redo_needed
+  # guess.each do |color|
+  #   redo_needed = true unless ACCEPTABLE_COLORS.include?(color)
+  # end
+  # guess = user_guess if redo_needed
 
   evaluate_round(guess, color_code, b_dots, w_dots)
 end
@@ -281,6 +281,7 @@ def computer_guessing_user_code
   # puts "You beat the computer!" unless end_game
 end
 
+# OPPOSITE!!!
 def play_game
   if user_pick
     puts "You are guessing the computer's code!"
@@ -292,11 +293,74 @@ def play_game
   end
 end
 
-play_game
+# play_game
 
-# Model to represent computer function in MasterMind Project
+# Model to represent computer in MasterMind Project
 class Computer
   def initialize(job)
     @job = job
   end
 end
+
+# Model to represent user in MasterMind Project
+class User
+  attr_accessor :choice
+
+  def initialize(name)
+    @name = name
+    @choice = user_pick
+    @is_winner = true
+  end
+
+  def check_user_input(code)
+    code = user_guess unless code.length == 4
+    redo_needed = false
+    code.each do |color|
+      redo_needed = true unless ACCEPTABLE_COLORS.include?(color)
+    end
+    code = user_guess if redo_needed
+    code
+  end
+
+  def user_pick
+    puts "Do you want to create the code? [Y/N] "
+    user_choice = gets.chomp.upcase
+    user_pick unless %w[Y N].include?(user_choice)
+    user_choice == "Y"
+  end
+
+  def user_guess
+    message = @choice ? "code" : "guess"
+    guess = []
+    puts "What's your four-color #{message}? (ex: blue, blue, blue, blue)"
+    puts "Available Colors: blue, red, orange, yellow, purple, green "
+    4.times do |time|
+      puts "Color #{time + 1}: "
+      guess << gets.chomp
+    end
+    check_user_input(guess)
+  end
+
+  def ending_message
+    message = @is_winner ? "#{@name.upcase}, you beat the computer!" : "#{@name.upcase}, the computer won!"
+    puts message
+  end
+
+  def user_guessing_computer_code(color_code)
+    12.times do |time|
+      puts "---Attempt No: #{time + 1}---"
+      @is_winner = play_round(color_code, user_guess)
+      break if @is_winner
+    end
+    p color_code
+    ending_message
+  end
+end
+
+def start_game
+  puts "Whats Your Name? "
+  tj = User.new(gets.chomp)
+  color_code = get_color_code(ACCEPTABLE_COLORS)
+  tj.user_guessing_computer_code(color_code)
+end
+start_game

@@ -31,22 +31,3 @@ module Evaluating
     end
     w_dots
   end
-
-  def compare_codes(user_guess, random_color_code, b_dots, w_dots)
-    # Try removing elements from array once a match is hit
-    # Work on clone to not permanently remove elements from original
-
-    guess = user_guess.clone
-    color_code = random_color_code.clone
-
-    delete_indexes = double_matches(guess, color_code)
-
-    b_dots += delete_indexes.length
-
-    guess, color_code = double_matches_delete(delete_indexes, guess, color_code)
-
-    w_dots = single_match(guess, color_code, w_dots)
-
-    [b_dots, w_dots]
-  end
-end

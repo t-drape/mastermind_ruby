@@ -109,9 +109,10 @@ end
 
 # A single class to hold all gameplay for MasterMind Project!
 class Game
+  ACCEPTABLE_COLORS = %w[blue red orange yellow purple green].freeze
   def initialize
     puts "What is Your Name? "
-    @user = User.new(gets.chomp)
+    @user = User.new(gets.chomp, ACCEPTABLE_COLORS)
   end
 
   def introduce

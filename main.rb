@@ -52,5 +52,7 @@
 #     - [x] Create game logic
 #     - [x] Play 12 Rounds as normal
 
+require_relative "lib"
+
 MASTERMIND = Game.new
 MASTERMIND.play_game

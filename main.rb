@@ -375,13 +375,18 @@ class User
 
   def initialize(name)
     @name = name
-    @choice = user_pick
+    @choice = nil
     @is_winner = false
-    @code = current_code
+    @code = nil
   end
 
   def current_code
     @choice ? user_guess : nil
+  end
+
+  def initialize_choice
+    @choice = user_pick
+    @code = current_code
   end
 
   def check_user_input(code)
@@ -422,7 +427,8 @@ class User
     puts message
   end
 
-  def user_guessing_computer_code(color_code)
+  def user_guessing_computer_code
+    color_code = get_color_code(ACCEPTABLE_COLORS)
     12.times do |time|
       puts "---Attempt No: #{time + 1}---"
       @is_winner = play_round(color_code, user_guess)
@@ -437,9 +443,39 @@ def start_game
   puts "Whats Your Name? "
   tj = User.new(gets.chomp)
   comp = Computer.new(tj.choice)
-  color_code = get_color_code(ACCEPTABLE_COLORS)
   comp.computer_guessing_user_code(tj.code)
   tj.is_winner = !comp.is_winner
   tj.ending_message
 end
-start_game
+
+# A single class to hold all gameplay for MasterMind Project!
+class Game
+  def initialize
+    puts "What is Your Name? "
+    @user = User.new(gets.chomp)
+  end
+
+  def introduce
+    puts "++++Hi there! Welcome to MasterMind!++++"
+    puts "++++The goal of this game is for one person to guess the other's code!++++"
+    puts "++++In this version, you can either build your code for the computer to guess...++++"
+    puts "++++Or try to guess the computer's random code!++++"
+    puts "++++Please choose your path forward at the prompt: ++++"
+    @user.initialize_choice
+  end
+
+  def play_game
+    introduce
+    if @user.choice
+      comp = Computer.new(@user.choice)
+      comp.computer_guessing_user_code(@user.code)
+      @user.is_winner = !comp.is_winner
+      @user.ending_message
+    else
+      @user.user_guessing_computer_code
+    end
+  end
+end
+
+MASTERMIND = Game.new
+MASTERMIND.play_game

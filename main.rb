@@ -276,7 +276,7 @@ def computer_guessing_user_code
   #   end
   # end
   #
-  ending_message(end_game, false)
+  # ending_message(end_game, false)
   # puts "The computer guessed your code!" if end_game
   # puts "You beat the computer!" unless end_game
 end
@@ -297,19 +297,102 @@ end
 
 # Model to represent computer in MasterMind Project
 class Computer
+  attr_accessor :choice, :correct_color_array, :bd
+
   def initialize(job)
-    @job = job
+    @choice = !job
+    @rounds = 12
+    @cca = check_need_for_array
+    @bd = 0
+    @is_winner = nil
+  end
+
+  def check_need_for_array
+    return nil if choice
+
+    []
+  end
+
+  def get_color_code(available_colors)
+    random = Random.new
+    color_code = []
+    4.times { color_code << available_colors[random.rand(5)] }
+    color_code
+  end
+
+  def shuffled_guesses(code)
+    @rounds.times do |time|
+      p "---Attempt No: #{12 - (@rounds - time) + 1}---"
+      former = @cca
+      @cca = @cca.shuffle until @cca != former
+      p @cca
+      return true if @cca == code
+    end
+    false
+  end
+
+  def single_color_computer_guess(code)
+    ACCEPTABLE_COLORS.length.times do |time|
+      @rounds -= 1
+      puts "---Attempt No: #{time + 1}---"
+      guess = Array.new(4, ACCEPTABLE_COLORS[time])
+      p guess
+      end_game = play_computer_guessing_round(guess, code)
+      return @cca if end_game
+      next unless @cca.length == 4
+
+      return @cca
+    end
+  end
+
+  def play_computer_guessing_round(computer_guess, user_code)
+    @bd = 0
+    computer_evaluate_round(computer_guess, user_code)
+    @bd.times do
+      @cca << computer_guess[0]
+    end
+    @bd == 4
+  end
+
+  def computer_evaluate_round(guess, color_code)
+    computer_compare_codes(guess, color_code) if color_code.any? { |element| guess.include?(element) }
+  end
+
+  def computer_compare_codes(user_guess, random_color_codes)
+    guess = user_guess.clone
+    color_code = random_color_codes.clone
+
+    delete_indexes = double_matches(guess, color_code)
+
+    @bd += delete_indexes.length
+  end
+
+  def computer_guessing_user_code(user_provided_code)
+    return if choice
+
+    @cca = single_color_computer_guess(user_provided_code)
+    @is_winner = @cca == user_provided_code ? true : shuffled_guesses(user_provided_code)
   end
 end
 
 # Model to represent user in MasterMind Project
 class User
-  attr_accessor :choice
+  attr_accessor :choice, :code, :guess
 
   def initialize(name)
     @name = name
     @choice = user_pick
-    @is_winner = true
+    @is_winner = nil
+    @code = current_code
+    @guess = current_guess
+  end
+
+  def current_code
+    @choice ? user_guess : nil
+  end
+
+  def current_guess
+    @choice ? nil : user_guess
   end
 
   def check_user_input(code)
@@ -329,11 +412,15 @@ class User
     user_choice == "Y"
   end
 
-  def user_guess
+  def opening_message
     message = @choice ? "code" : "guess"
-    guess = []
     puts "What's your four-color #{message}? (ex: blue, blue, blue, blue)"
     puts "Available Colors: blue, red, orange, yellow, purple, green "
+  end
+
+  def user_guess
+    guess = []
+    opening_message
     4.times do |time|
       puts "Color #{time + 1}: "
       guess << gets.chomp
@@ -349,7 +436,7 @@ class User
   def user_guessing_computer_code(color_code)
     12.times do |time|
       puts "---Attempt No: #{time + 1}---"
-      @is_winner = play_round(color_code, user_guess)
+      @is_winner = play_round(color_code, @current_guess)
       break if @is_winner
     end
     p color_code
@@ -360,7 +447,9 @@ end
 def start_game
   puts "Whats Your Name? "
   tj = User.new(gets.chomp)
-  color_code = get_color_code(ACCEPTABLE_COLORS)
-  tj.user_guessing_computer_code(color_code)
+  comp = Computer.new(tj.choice)
+  # color_code = get_color_code(ACCEPTABLE_COLORS)
+  # tj.user_guessing_computer_code(color_code)
+  comp.computer_guessing_user_code(tj.code)
 end
 start_game
